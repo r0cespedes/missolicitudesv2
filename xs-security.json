@@ -1,0 +1,28 @@
+{
+  "xsappname": "missolicitudesv2",
+  "tenant-mode": "dedicated",
+  "description": "Security profile of called application",
+  "scopes": [
+    {
+      "name": "uaa.user",
+      "description": "UAA"
+    }
+  ],
+  "role-templates": [
+    {
+      "name": "Token_Exchange",
+      "description": "UAA",
+      "scope-references": [
+        "uaa.user"
+      ]
+    }
+  ],
+  "oauth2-configuration": {
+    "redirect-uris": [
+      "https://missolicitudesv2-approuter.cfapps.eu10.hana.ondemand.com/**",
+      "https://area-metropolitana-de-barcelona-amb-btp-qas-mxqf3kvs-de7e85405e.cfapps.eu10-004.hana.ondemand.com/login/callback"
+      
+    ]
+  }
+
+}

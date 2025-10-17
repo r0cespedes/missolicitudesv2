@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>App Title</title>
+    <style>
+        html, body, body > div, #container, #container-uiarea {
+            height: 100%;
+        }
+    </style>
+    <script
+        id="sap-ui-bootstrap"
+        src="resources/sap-ui-core.js"
+        data-sap-ui-theme="sap_horizon"
+        data-sap-ui-resource-roots='{
+            "com.inetum.missolicitudesv2": "./"
+        }'
+        data-sap-ui-oninit="module:com/inetum/missolicitudesv2/main"
+        data-sap-ui-compat-version="edge"
+        data-sap-ui-async="true"
+        
+    ></script>
+    <!-- data-sap-ui-frame-options="trusted" -->
+     <script>
+        globalThis["sap-ui-config"] = {
+            "frame-options": "allow",
+            "frame-options-config": {
+                mode: "allow",
+                allowList: [ "hcm-eu30-preview.hr.cloud.sap" ],
+                blockEvents:false,
+                showBlockLayer:false
+            }
+        };
+    </script>
+</head>
+<body class="sapUiBody sapUiSizeCompact" id="content">  
+</body>
+</html>

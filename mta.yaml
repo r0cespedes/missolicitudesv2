@@ -1,0 +1,99 @@
+_schema-version: "3.2"
+ID: missolicitudesv2
+version: 0.0.1
+modules:
+- name: missolicitudesv2-approuter
+  type: approuter.nodejs
+  path: missolicitudesv2-approuter
+  requires:
+  - name: missolicitudesv2_html_repo_runtime
+  - name: uaa_missolicitudesv2
+  - name: missolicitudesv2-destination-service
+    group: destinations
+    properties:
+      forwardAuthToken: false
+      name: ui5
+      url: https://ui5.sap.com
+  parameters:
+    disk-quota: 256M
+    memory: 256M
+
+  properties:
+    COOKIES: '{
+        "SameSite": "None",
+        "Partitioned":  {
+            "supportedPartitionAgents":"(.*)",
+            "unsupportedPartitionAgents":"PostmanRuntime/7.29.2"
+        }
+      }'
+    httpHeaders: [
+      {
+        "Content-Security-Policy": "frame-ancestors 'self' https://hcm-eu30-preview.hr.cloud.sap https://amb-btp-qas-mxqf3kvs.authentication.eu10.hana.ondemand.com"
+      },  
+      {
+        "X-Frame-Options": "ALLOW-FROM https://hcm-eu30-preview.hr.cloud.sap"  
+      }
+    ]  
+- name: missolicitudesv2_ui_deployer
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: missolicitudesv2_html_repo_host
+    parameters:
+      content-target: true
+  build-parameters:
+    build-result: resources
+    requires:
+    - artifacts:
+      - cominetummissolicitudesv2.zip
+      name: cominetummissolicitudesv2
+      target-path: resources/
+- name: cominetummissolicitudesv2
+  type: html5
+  path: missolicitudesv2
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm install
+    - npm run build:cf
+    supported-platforms: []
+resources:
+- name: missolicitudesv2_html_repo_runtime
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-runtime
+- name: uaa_missolicitudesv2
+  type: org.cloudfoundry.managed-service
+  parameters:
+    path: ./xs-security.json
+    service: xsuaa
+    service-name: missolicitudesv2-xsuaa-service
+    service-plan: application
+- name: missolicitudesv2_html_repo_host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-host
+- name: missolicitudesv2-destination-service
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      HTML5Runtime_enabled: false
+      init_data:
+        instance:
+          destinations:
+          - Authentication: NoAuthentication
+            Name: ui5
+            ProxyType: Internet
+            Type: HTTP
+            URL: https://ui5.sap.com
+          existing_destinations_policy: update
+      version: 1.0.0
+    service: destination
+    service-name: missolicitudesv2-destination-service
+    service-plan: lite
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
