@@ -88,6 +88,7 @@ sap.ui.define([
          * Mostrar vista de detalle dinámica
          */
         showDynamicDetailView: async function (sSolicitudId, bEditMode = false) {
+            await Util.getModelMainAndValidateSession(this._oController);
             try {
                 Util.showBI(true);
 

@@ -53,7 +53,54 @@ sap.ui.define([
 			} else {
 				BusyIndicator.hide();
 			}
-		}
+		},
+
+		refreshXsuaaToken: async function () {
+			try {
+				const response = await fetch("/oauth/token", {
+					method: "GET",
+					credentials: "include"
+				});
+				if (response.ok) {
+					console.log("Token renovado correctamente");
+					return true;
+				}
+				console.warn("No se pudo renovar el token", response.status);
+				return false;
+			} catch (err) {
+				console.error("Error al intentar refrescar token:", err);
+				return false;
+			}
+		},
+
+		onRequestFailed: async function (oEvent) {
+			const oParams = oEvent.getParameters();
+			const sStatusCode = oParams.response.statusCode;
+			let oResourceBundle = null;
+
+			if (this.oView) {
+				oResourceBundle = this.oView.getOwnerComponent().getModel("i18n").getResourceBundle();
+			}
+
+			if (sStatusCode === 401 || sStatusCode === 403) {
+				const refreshed = await utils.refreshXsuaaToken();
+				if (refreshed) {
+					MessageToast.show(oResourceBundle.getText("sessionRenewed"));
+					return; // ya se refrescó el token, no hace falta recargar
+				} else {
+					MessageToast.show(oResourceBundle.getText("sessionExpired"));
+					window.location.reload(true);
+				}
+			}
+		},
+
+		getModelMainAndValidateSession: function (oView) {
+            this.oView = oView;
+            const oMainModel = oView.getOwnerComponent().getModel();
+            if(oMainModel){
+                oMainModel.attachRequestFailed(this.onRequestFailed, this);
+            }
+        }
 
 	};
 });
