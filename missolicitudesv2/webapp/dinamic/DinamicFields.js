@@ -1270,6 +1270,9 @@ sap.ui.define([
                 case "N":
                     oField = this._createInputNumber(sFieldId, sDisplayValue, oFieldConfig);
                     break;
+                case "T":
+                    oField = this._createTimePicker(sFieldId, sDisplayValue, oFieldConfig);
+                    break;
                 default:
                     oField = this._createInputField(sFieldId, sDisplayValue, oFieldConfig);
             }
@@ -1356,7 +1359,7 @@ sap.ui.define([
                 editable: oFieldConfig.editable,
                 displayFormat: "dd/MM/yyyy",
                 valueFormat: "yyyy-MM-dd",
-                width: oFieldConfig.length ? `${oFieldConfig.length}rem` : `10rem`,
+                width: "14rem",
 
             });
         },
@@ -1467,7 +1470,18 @@ sap.ui.define([
             });
         },
 
-        
+        _createTimePicker: function (sFieldId, sDisplayValue, oFieldConfig) {
+            return new sap.m.TimePicker({
+                id: sFieldId,
+                valueFormat: "HH:mm:ss",
+                displayFormat: "hh:mm a",
+                width: "14rem",
+                value: sDisplayValue,
+                editable: oFieldConfig.editable
+            });
+
+        },
+
         _checkIfAnyFieldIsEditable: function (aAttachmentFields, bEditMode, oSolicitud, bUsuarioEsCreador) {
             return aAttachmentFields.some(oField => {
                 let bEditable = oField.cust_modif === true && bEditMode && oSolicitud.cust_status === "RA";
@@ -1761,7 +1775,7 @@ sap.ui.define([
 
         _validateDeclaraciones: function () {
             let bValidacionCorrecta = true;
-            const aCamposDeclaracion = ["cust_Cesion_datos2", "cust_declaro1", "cust_declaro2"];
+            const aCamposDeclaracion = ["cust_Cesion_datos2", "cust_declaro1", "cust_declaro2", "cust_Declaro"];
 
             for (const field of this._dynamicFields) {
 
@@ -1785,6 +1799,9 @@ sap.ui.define([
                                     break;
                                 case "cust_declaro2":
                                     sTextoError = this.oResourceBundle.getText("validation.telework");
+                                    break;
+                                case "cust_Declaro":
+                                    sTextoError = this.oResourceBundle.getText("validation.responsability");    
                                     break;
                             }
 

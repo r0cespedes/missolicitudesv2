@@ -76,6 +76,10 @@
         "settings": {
           "defaultBindingMode": "TwoWay"
         }
+      },
+      "mLocalModel": {
+        "type": "sap.ui.model.json.JSONModel",
+        "uri": "model/localModel.json"
       }
     },
     "resources": {
